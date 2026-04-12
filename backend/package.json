@@ -7,7 +7,9 @@
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
-    "lint": "eslint src/**/*.ts"
+    "lint": "eslint src/**/*.ts",
+    "verify-media": "node scripts/verify-media.cjs",
+    "normalize-media-urls": "node scripts/normalize-media-urls.cjs"
   },
   "dependencies": {
     "@google/generative-ai": "^0.21.0",

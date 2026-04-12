@@ -61,11 +61,33 @@ LucidFrame/
 ├── src/                 # React app
 ├── backend/
 │   ├── src/             # Express + sockets
+│   ├── scripts/         # Media maintenance (see below)
 │   ├── uploads/         # Runtime uploads (only .gitkeep in git)
 │   └── .env.example     # Copy to .env — never commit .env
 ├── package.json         # Frontend scripts + dev:api helper
 └── vite.config.ts
 ```
+
+## Restoring images after `uploads/` was deleted
+
+Posts in **MongoDB** store paths like `/uploads/<exact-filename>`. The browser loads them from your **API host** + that path (e.g. `http://localhost:5000/uploads/...`).
+
+1. **Put every file back** under `backend/uploads/` using the **same filename** MongoDB expects (same name as when the post was created, e.g. `ai-....jpg`, `image-....webp`).
+2. If you copied from an old GitHub/deployment, URLs in the database might still be **full `https://...` links**. Normalize them to local paths:
+
+   ```bash
+   cd backend
+   npm run normalize-media-urls
+   ```
+
+3. **Check** that every DB reference has a file on disk:
+
+   ```bash
+   cd backend
+   npm run verify-media
+   ```
+
+   It prints any **missing files** and **orphan** files on disk not referenced in the DB. Fix missing names until the script reports all clear, then restart the API and hard-refresh the app.
 
 ## GitHub: stop tracking `node_modules` or `.env` (already pushed)
 
