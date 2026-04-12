@@ -46,13 +46,28 @@ VITE_API_URL=http://localhost:5000/api
 VITE_SOCKET_URL=http://localhost:5000
 ```
 
-### 3. One-shot build (CI / production)
+### 3. Builds
 
 ```bash
 npm run build
 ```
 
-Builds backend (`tsc`) then the Vite client.
+Runs **Vite only** (used by **Vercel** and static hosting). Backend is not compiled in this step.
+
+```bash
+npm run build:full
+```
+
+Builds **backend** (`tsc` in `backend/`) then the **Vite** client (local full-stack artifact).
+
+### 4. Deploy frontend on Vercel
+
+1. Import this Git repo in [Vercel](https://vercel.com). **Root directory** = repo root (where root `package.json` lives).
+2. Defaults: **Install** `npm install`, **Build** `npm run build`, **Output** `dist`. A `vercel.json` is included for SPA routing (React Router).
+3. In Vercel → **Settings → Environment variables**, set your **production API** (no `/api` suffix in the base host; the app adds `/api` in axios):
+   - `VITE_API_URL` = `https://your-api-host.com/api`
+   - `VITE_SOCKET_URL` = `https://your-api-host.com` (same host as Socket.IO; many hosts need WebSocket support)
+4. **Redeploy** after changing env vars. The **Express backend** must be hosted separately (Railway, Render, Fly.io, a VPS, etc.); Vercel is only the static SPA here.
 
 ## Repo layout
 
@@ -111,7 +126,8 @@ Then confirm `backend/.env` exists locally (copy from `.env.example`) and run `n
 |--------|-------------|
 | `npm run dev` | Vite dev server |
 | `npm run dev:api` | Backend `ts-node-dev` from `backend/` |
-| `npm run build` | Backend build + Vite production build |
+| `npm run build` | Vite production build (Vercel) |
+| `npm run build:full` | Backend `tsc` + Vite (local full stack) |
 | `npm run lint` | ESLint (frontend `src/`) |
 | `npm run preview` | Preview production frontend build |
 

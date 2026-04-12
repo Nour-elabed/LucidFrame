@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite",
     "dev:api": "npm run dev --prefix backend",
-    "build": "npm run build --prefix backend && vite build",
+    "build": "vite build",
+    "build:backend": "npm run build --prefix backend",
+    "build:full": "npm run build:backend && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },

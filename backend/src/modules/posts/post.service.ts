@@ -53,10 +53,12 @@ export const toggleLike = async (postId: string, userId: string) => {
   if (!post) throw createError('Post not found', 404);
 
   const userObjectId = new mongoose.Types.ObjectId(userId);
-  const alreadyLiked = post.likes.some((id) => id.equals(userObjectId));
+  const alreadyLiked = post.likes.some((oid: mongoose.Types.ObjectId) =>
+    oid.equals(userObjectId)
+  );
 
   if (alreadyLiked) {
-    post.likes = post.likes.filter((id) => !id.equals(userObjectId));
+    post.likes = post.likes.filter((oid: mongoose.Types.ObjectId) => !oid.equals(userObjectId));
   } else {
     post.likes.push(userObjectId);
   }

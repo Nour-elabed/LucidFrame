@@ -1,7 +1,17 @@
 import multer from 'multer';
 import path from 'path';
+import type { Request } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import fs from 'fs';
+
+/** Multer file shape (avoids Express.Multer merge issues in some TS setups) */
+type MulterIncomingFile = {
+  fieldname: string;
+  originalname: string;
+  encoding: string;
+  mimetype: string;
+  size: number;
+};
 
 const uploadDir = path.join(process.cwd(), 'uploads');
 if (!fs.existsSync(uploadDir)) {
@@ -9,18 +19,18 @@ if (!fs.existsSync(uploadDir)) {
 }
 
 const storage = multer.diskStorage({
-  destination: (_req, _file, cb) => {
+  destination: (_req: Request, _file: MulterIncomingFile, cb) => {
     cb(null, uploadDir);
   },
-  filename: (_req, file, cb) => {
+  filename: (_req: Request, file: MulterIncomingFile, cb) => {
     const ext = path.extname(file.originalname);
     cb(null, `${uuidv4()}${ext}`);
   },
 });
 
 const fileFilter = (
-  _req: Express.Request,
-  file: Express.Multer.File,
+  _req: Request,
+  file: MulterIncomingFile,
   cb: multer.FileFilterCallback
 ) => {
   const allowed = /jpeg|jpg|png|gif|webp/;
