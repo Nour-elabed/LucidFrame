@@ -4,8 +4,9 @@ import { Sparkles, Wand2, User, Package, UserCheck, Share2, Download } from 'luc
 import { aiService, type GenerationType } from '../services/ai.service';
 import { postsService } from '../services/posts.service';
 import type { GeneratedImage } from '../types';
+import { getApiOrigin } from '../lib/apiOrigin';
 
-const API_BASE = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
+const API_BASE = getApiOrigin();
 
 const types: { value: GenerationType; label: string; icon: any; desc: string }[] = [
   { value: 'person', label: 'Person', icon: User, desc: 'Portrait or lifestyle photo of a person' },

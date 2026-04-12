@@ -1,6 +1,8 @@
 import { io, Socket } from 'socket.io-client';
+import { getApiOrigin } from './apiOrigin';
 
-const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000';
+const SOCKET_URL =
+  import.meta.env.VITE_SOCKET_URL?.trim() || getApiOrigin();
 
 let socket: Socket | null = null;
 

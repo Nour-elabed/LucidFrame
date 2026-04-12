@@ -5,8 +5,9 @@ import { dashboardService } from '../services/dashboard.service';
 import { aiService } from '../services/ai.service';
 import { useAuthStore } from '../store/authStore';
 import type { UserStats, AdminStats, GeneratedImage } from '../types';
+import { getApiOrigin } from '../lib/apiOrigin';
 
-const API_BASE = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
+const API_BASE = getApiOrigin();
 
 const StatCard = ({ icon: Icon, label, value, color }: {
   icon: any; label: string; value: number | string; color: string;

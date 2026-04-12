@@ -10,8 +10,9 @@ import { useAuthStore } from '../store/authStore';
 import { usePostsStore } from '../store/postsStore';
 import { getSocket, connectSocket } from '../lib/socket';
 import CommentBubble from '../components/CommentBubble';
+import { getApiOrigin } from '../lib/apiOrigin';
 
-const API_BASE = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
+const API_BASE = getApiOrigin();
 
 const getImageSrc = (url: string, base: string) =>
   url?.startsWith('http') ? url : `${base}${url}`;

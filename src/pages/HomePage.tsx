@@ -9,8 +9,9 @@ import { getSocket, connectSocket } from '../lib/socket';
 import type { Post } from '../types';
 import PostCard from '../components/PostCard';
 import FeedSkeleton from '../components/FeedSkeleton';
+import { getApiOrigin } from '../lib/apiOrigin';
 
-const API_BASE = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
+const API_BASE = getApiOrigin();
 
 export default function HomePage() {
   const { isAuthenticated } = useAuthStore();

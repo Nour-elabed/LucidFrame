@@ -64,10 +64,12 @@ Builds **backend** (`tsc` in `backend/`) then the **Vite** client (local full-st
 
 1. Import this Git repo in [Vercel](https://vercel.com). **Root directory** = repo root (where root `package.json` lives).
 2. Defaults: **Install** `npm install`, **Build** `npm run build`, **Output** `dist`. A `vercel.json` is included for SPA routing (React Router).
-3. In Vercel → **Settings → Environment variables**, set your **production API** (no `/api` suffix in the base host; the app adds `/api` in axios):
-   - `VITE_API_URL` = `https://your-api-host.com/api`
-   - `VITE_SOCKET_URL` = `https://your-api-host.com` (same host as Socket.IO; many hosts need WebSocket support)
-4. **Redeploy** after changing env vars. The **Express backend** must be hosted separately (Railway, Render, Fly.io, a VPS, etc.); Vercel is only the static SPA here.
+3. In Vercel → **Settings → Environment variables** → **Production** (and Preview if you use it):
+   - **`VITE_API_URL`** = `https://your-api-host.com/api` (or `https://your-api-host.com` — both work). **Required** so images (`/uploads/...`) and REST calls hit your server, not `localhost`.
+   - **`VITE_SOCKET_URL`** = `https://your-api-host.com` (omit if same host as API; defaults to API origin).
+   - Use **`https://`** — Vercel is HTTPS; `http://` APIs often break images (mixed content).
+4. **Redeploy** after saving env vars (Deployments → … → Redeploy). Vite bakes these in at **build** time; changing env without redeploy does nothing.
+5. On the **backend**, set **`CLIENT_URL`** in `.env` to your Vercel site (e.g. `https://your-app.vercel.app`) if you tighten CORS later; current `origin: true` is permissive.
 
 ## Repo layout
 
