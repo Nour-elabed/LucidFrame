@@ -23,8 +23,9 @@ const httpServer = createServer(app);
 app.use(cors({ origin: true, credentials: true }));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
-// Serve uploaded images statically
-app.use('/uploads', express.static(path.join(__dirname, '../../uploads')));
+// Serve uploaded images statically - fix for production deployment
+const uploadsPath = path.join(process.cwd(), 'uploads');
+app.use('/uploads', express.static(uploadsPath));
 
 // ── Socket.IO ─────────────────────────────────────────────────────────────────
 initSocket(httpServer);

@@ -31,10 +31,13 @@ const fetchWithRetry = async (
       console.log(`[AI] Attempt ${attempt + 1}/${maxRetries} — seed=${seed}`);
 
       const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 60000); // 60s timeout
+      const timeout = setTimeout(() => controller.abort(), 120000); // 120s timeout
 
       const response = await fetch(fetchUrl, {
         signal: controller.signal,
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+        }
       });
 
       clearTimeout(timeout);
@@ -82,7 +85,7 @@ export const generateImage = async (
   // Fetch with retry logic
   const imageBytes = await fetchWithRetry(enhancedPrompt);
 
-  // Save image to disk
+  // Save image to disk - ensure directory exists
   const uploadDir = path.join(process.cwd(), 'uploads');
   if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });

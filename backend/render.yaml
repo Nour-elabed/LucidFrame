@@ -15,4 +15,3 @@ services:
       name: uploads
       mountPath: /usr/src/app/uploads
       sizeGB: 1
-    autoDeploy: false
