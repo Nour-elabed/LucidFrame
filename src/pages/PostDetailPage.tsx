@@ -15,8 +15,7 @@ import { getApiOrigin } from '../lib/apiOrigin';
 const API_BASE = getApiOrigin();
 
 const getImageSrc = (url: string, base: string) =>
-  url?.startsWith('http') ? url : `${base}${url}`;
-
+  !url ? '' : url.startsWith('http') ? url : `${base}${url}`;
 export default function PostDetailPage() {
   const { id } = useParams<{ id: string }>();
   const { isAuthenticated } = useAuthStore();

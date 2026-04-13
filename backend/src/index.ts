@@ -20,7 +20,14 @@ const app = express();
 const httpServer = createServer(app);
 
 // ── Middleware ────────────────────────────────────────────────────────────────
-app.use(cors({ origin: true, credentials: true }));
+app.use(cors({
+  origin: [
+    'http://localhost:5173',
+    'http://localhost:3000',
+    process.env.FRONTEND_URL || 'https://lucid-frame-h3od.vercel.app/', // ✅ set FRONTEND_URL in Render env vars
+  ],
+  credentials: true,
+}));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 // Serve uploaded images statically - fix for production deployment
