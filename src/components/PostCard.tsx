@@ -65,9 +65,10 @@ export default function PostCard({ post, index = 0, apiBase }: PostCardProps) {
               loading="lazy"
               className="w-full max-h-[600px] object-cover"
               onError={(e) => {
-                (e.target as HTMLImageElement).src =
-                  'https://via.placeholder.com/400x400?text=Image+unavailable';
-              }}
+                const target = e.target as HTMLImageElement;
+                  target.onerror = null; // stops the loop
+                    target.src = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Crect width='400' height='400' fill='%23374151'/%3E%3Ctext x='50%25' y='50%25' fill='%239CA3AF' text-anchor='middle' dy='.3em' font-family='sans-serif' font-size='16'%3EImage unavailable%3C/text%3E%3C/svg%3E`;
+                      }}
             />
           </div>
         </Link>
