@@ -3,6 +3,7 @@ import express from 'express';
 import { createServer } from 'http';
 import cors from 'cors';
 import path from 'path';
+import fs from 'fs';
 
 import { config } from './config/env';
 import { connectDB } from './config/db';
@@ -23,8 +24,13 @@ const httpServer = createServer(app);
 app.use(cors({ origin: true, credentials: true }));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
+// Ensure uploads directory exists
+const uploadsPath = path.join(process.cwd(), 'uploads');
+if (!fs.existsSync(uploadsPath)) {
+  fs.mkdirSync(uploadsPath, { recursive: true });
+}
 // Serve uploaded images statically
-app.use('/uploads', express.static(path.join(__dirname, '../../uploads')));
+app.use('/uploads', express.static(uploadsPath));
 
 // ── Socket.IO ─────────────────────────────────────────────────────────────────
 initSocket(httpServer);

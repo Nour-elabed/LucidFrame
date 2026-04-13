@@ -14,9 +14,6 @@ type MulterIncomingFile = {
 };
 
 const uploadDir = path.join(process.cwd(), 'uploads');
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
 
 const storage = multer.diskStorage({
   destination: (_req: Request, _file: MulterIncomingFile, cb) => {
