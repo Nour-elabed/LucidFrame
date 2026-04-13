@@ -117,21 +117,7 @@ export const generateImage = async (
     imageUrl,
   });
 
-  // Also create a post so AI images appear in feed
-  const { PostModel } = require('../posts/post.model');
-  const post = await PostModel.create({
-    userId,
-    imageUrl,
-    caption: `AI Generated: ${prompt}`,
-  });
-  
-  // Populate user info for response
-  await post.populate('userId', 'username avatar');
-
-  return {
-    ...generated.toObject(),
-    post: post.toObject(),
-  };
+  return generated;
 };
 
 export const getUserGenerations = async (userId: string) => {
