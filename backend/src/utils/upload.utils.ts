@@ -13,9 +13,10 @@ type MulterIncomingFile = {
   size: number;
 };
 
-const uploadDir = process.env.NODE_ENV === 'production' 
-  ? '/usr/src/app/uploads'  // Render's mount path
-  : path.join(process.cwd(), 'uploads');
+const uploadDir = path.join(process.cwd(), 'uploads');
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
 
 const storage = multer.diskStorage({
   destination: (_req: Request, _file: MulterIncomingFile, cb) => {

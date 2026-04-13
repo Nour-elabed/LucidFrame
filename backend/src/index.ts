@@ -3,7 +3,6 @@ import express from 'express';
 import { createServer } from 'http';
 import cors from 'cors';
 import path from 'path';
-import fs from 'fs';
 
 import { config } from './config/env';
 import { connectDB } from './config/db';
@@ -24,16 +23,8 @@ const httpServer = createServer(app);
 app.use(cors({ origin: true, credentials: true }));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
-// Ensure uploads directory exists - handle both local and Render environments
-const uploadsPath = process.env.NODE_ENV === 'production' 
-  ? '/usr/src/app/uploads'  // Render's mount path
-  : path.join(process.cwd(), 'uploads');
-
-if (!fs.existsSync(uploadsPath)) {
-  fs.mkdirSync(uploadsPath, { recursive: true });
-}
 // Serve uploaded images statically
-app.use('/uploads', express.static(uploadsPath));
+app.use('/uploads', express.static(path.join(__dirname, '../../uploads')));
 
 // ── Socket.IO ─────────────────────────────────────────────────────────────────
 initSocket(httpServer);
