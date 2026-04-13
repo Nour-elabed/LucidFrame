@@ -2,8 +2,8 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "$API_URL/api/$1" },
-    { "source": "/uploads/(.*)", "destination": "$API_URL/uploads/$1" },
+    { "source": "/api/(.*)", "destination": "https://lucidframe-3.onrender.com/api/$1" },
+    { "source": "/uploads/(.*)", "destination": "https://lucidframe-3.onrender.com/uploads/$1" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
