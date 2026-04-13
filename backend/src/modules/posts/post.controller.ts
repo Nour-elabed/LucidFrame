@@ -37,22 +37,37 @@ export const createPost = async (
   next: NextFunction
 ): Promise<void> => {
   try {
+    console.log('[Post Controller] Request received:', {
+      body: req.body,
+      file: req.file ? 'File present' : 'No file',
+      headers: req.headers
+    });
+
     const { caption, imageUrl } = req.body;
     let finalImageUrl = imageUrl;
 
     // If file was uploaded via multer, build the URL
     if (req.file) {
+      console.log('[Post Controller] File uploaded:', {
+        filename: req.file.filename,
+        originalname: req.file.originalname,
+        size: req.file.size,
+        mimetype: req.file.mimetype
+      });
       finalImageUrl = `/uploads/${req.file.filename}`;
     }
 
     if (!finalImageUrl) {
+      console.log('[Post Controller] No image URL or file provided');
       res.status(400).json({ success: false, message: 'Image URL or file is required' });
       return;
     }
 
     const post = await PostService.createPost(req.user!.userId, finalImageUrl, caption || '');
+    console.log('[Post Controller] Post created successfully:', post._id);
     sendSuccess(res, post, 'Post created', 201);
-  } catch (err) {
+  } catch (err: any) {
+    console.error('[Post Controller] Error:', err.message, err.stack);
     next(err);
   }
 };
