@@ -24,7 +24,7 @@ app.use(cors({ origin: true, credentials: true }));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 // Serve uploaded images statically
-app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
+app.use('/uploads', express.static(path.join(__dirname, '../../uploads')));
 
 // ── Socket.IO ─────────────────────────────────────────────────────────────────
 initSocket(httpServer);
