@@ -19,33 +19,32 @@ export const getPost = async (req: Request, res: Response, next: NextFunction): 
 };
 
 export const createPost = async (
-  
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-const userId = req.user!.userId;
+    const userId = req.user!.userId;
+    let imageUrl: string;
 
-    if (!req.file) {
+    if (req.file) {
+      imageUrl = `/uploads/${req.file.filename}`;
+    } else if (req.body.imageUrl) {
+      imageUrl = req.body.imageUrl;
+    } else {
       res.status(400).json({ message: 'Image is required' });
       return;
     }
 
-    const imageUrl = `/uploads/${req.file.filename}`;
     const caption = req.body.caption || '';
-
     const post = await PostService.createPost(userId, imageUrl, caption);
 
-    res.status(201).json({
-      success: true,
-      data: post,
-    });
-  } catch (err) {
+    res.status(201).json({ success: true, data: post });
+  } catch (err: any) {
+    console.error('[Post Controller] Error:', err.message, err.stack);
     next(err);
   }
 };
-
 export const likePost = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const post = await PostService.toggleLike(req.params.id, req.user!.userId);

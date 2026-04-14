@@ -25,8 +25,8 @@ const fetchWithRetry = async (
 
   for (let attempt = 0; attempt < maxRetries; attempt++) {
     try {
-      const seed = Math.floor(Math.random() * 100000);
-      const fetchUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=1024&height=1024&seed=${seed}&nologo=true`;
+      const seed = Date.now() % 100000;
+      const fetchUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt.replace(/\n/g, ' '))}?width=1024&height=1024&seed=${seed}&nologo=true`;
 
       console.log(`[AI] Attempt ${attempt + 1}/${maxRetries} — seed=${seed}`);
 
@@ -77,10 +77,23 @@ export const generateImage = async (
 ) => {
   let enhancedPrompt = enhancePrompt(prompt, type);
 
-  if (type === 'person_with_product' && file) {
-    console.log(`[ControlNet Pipeline] Reference Image Uploaded: ${file.filename}`);
-    enhancedPrompt += `, visually matched to the uploaded referenced product image`;
-  }
+ if (type === 'person_with_product' && file) {
+  enhancedPrompt = `
+A photorealistic professional fashion shoot.
+
+STRICT REQUIREMENTS:
+- The model MUST be holding or wearing the exact product shown in the reference image
+- The product must match shape, color, design, and branding exactly
+- No substitutions or similar objects allowed
+- Hands must correctly interact with the product
+
+SCENE:
+${prompt}
+
+STYLE:
+High-end commercial photography, 85mm lens, soft studio lighting, ultra realistic, 8k, shallow depth of field
+  `;
+}
 
   // Fetch with retry logic
   const imageBytes = await fetchWithRetry(enhancedPrompt);

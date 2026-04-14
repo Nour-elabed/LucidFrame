@@ -34,4 +34,6 @@ export const postsService = {
   deletePost: async (id: string): Promise<void> => {
     await api.delete(`/posts/${id}`);
   },
+  
+  
 };

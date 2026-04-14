@@ -33,19 +33,38 @@ const fileFilter = (
   file: MulterIncomingFile,
   cb: multer.FileFilterCallback
 ) => {
+  console.log('[Upload] File received:', {
+    originalname: file.originalname,
+    mimetype: file.mimetype,
+    size: file.size
+  });
+
+  // More permissive file checking - check both mimetype and extension
   const allowedMimeTypes = [
     'image/jpeg',
-    'image/jpg',
+    'image/jpg', 
     'image/png',
     'image/gif',
     'image/webp',
     'image/avif',
+    'application/octet-stream' // Some browsers send this
   ];
 
-  if (allowedMimeTypes.includes(file.mimetype)) {
+  const allowedExtensions = /\.(jpeg|jpg|png|gif|webp|avif)$/i;
+  const extOk = allowedExtensions.test(file.originalname);
+  const mimeOk = allowedMimeTypes.includes(file.mimetype) || file.mimetype.startsWith('image/');
+
+  if (extOk && mimeOk) {
+    console.log('[Upload] File accepted:', file.originalname);
     cb(null, true);
   } else {
-    cb(new Error(`Invalid file type: ${file.mimetype}`));
+    console.log('[Upload] File rejected:', {
+      originalname: file.originalname,
+      mimetype: file.mimetype,
+      extOk,
+      mimeOk
+    });
+    cb(new Error(`Only image files are allowed (jpeg, jpg, png, gif, webp, avif). Got: ${file.mimetype}`));
   }
 };
 

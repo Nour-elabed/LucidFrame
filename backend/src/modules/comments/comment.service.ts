@@ -28,3 +28,32 @@ export const getCommentsByPost = async (postId: string) => {
     .sort({ createdAt: -1 })
     .populate('userId', 'username avatar');
 };
+export const deleteComment = async (
+  commentId: string,
+  userId: string
+) => {
+  if (!mongoose.Types.ObjectId.isValid(commentId)) {
+    throw createError('Invalid comment ID', 400);
+  }
+
+  const comment = await CommentModel.findById(commentId);
+
+  if (!comment) {
+    throw createError('Comment not found', 404);
+  }
+
+  // only owner can delete
+  if (comment.userId.toString() !== userId) {
+    throw createError('Not authorized to delete this comment', 403);
+  }
+
+  await comment.deleteOne();
+
+  // optional real-time update (recommended)
+  getIO().emit('delete-comment', {
+    postId: comment.postId,
+    commentId,
+  });
+
+  return { deleted: true };
+};

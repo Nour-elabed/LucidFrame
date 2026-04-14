@@ -23,6 +23,7 @@ export default function GeneratePage() {
   const [shared, setShared] = useState(false);
   const [sharing, setSharing] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [lastPrompt, setLastPrompt] = useState('');
 
   const handleGenerate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,6 +34,7 @@ export default function GeneratePage() {
     setShared(false);
     try {
       const generated = await aiService.generate(prompt.trim(), type, type === 'person_with_product' ? imageFile : null);
+      setLastPrompt(prompt.trim());
       setResult(generated);
       setPrompt('');
     } catch (err: any) {
@@ -47,12 +49,38 @@ export default function GeneratePage() {
     if (!result) return;
     setSharing(true);
     try {
-      await postsService.createPost(result.imageUrl, prompt);
-      setShared(true);
+await postsService.createPost(result.imageUrl, '');setShared(true);
     } catch {
       setError('Failed to share post.');
     } finally {
       setSharing(false);
+    }
+  };
+  const handleDownload = async () => {
+    if (!result) return;
+
+    const imageUrl = result.imageUrl?.startsWith('http')
+      ? result.imageUrl
+      : `${API_BASE}${result.imageUrl}`;
+
+    try {
+      const response = await fetch(imageUrl);
+      const blob = await response.blob();
+
+      const blobUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+
+      link.href = blobUrl;
+      link.download = `lucidframe-${Date.now()}.jpg`;
+
+      document.body.appendChild(link);
+      link.click();
+
+      link.remove();
+      window.URL.revokeObjectURL(blobUrl);
+    } catch (err) {
+      console.error('Download failed:', err);
+      setError('Failed to download image.');
     }
   };
 
@@ -196,14 +224,13 @@ export default function GeneratePage() {
                     <Share2 className="w-4 h-4" />
                     {shared ? 'Shared to Feed!' : sharing ? 'Sharing…' : 'Share to Feed'}
                   </button>
-                  <a
-                    href={result.imageUrl?.startsWith('http') ? result.imageUrl : `${API_BASE}${result.imageUrl}`}
-                    download
-                    className="px-4 py-2.5 rounded-xl border border-border/40 text-sm text-muted-foreground hover:text-foreground hover:border-border/70 transition-colors flex items-center gap-2"
+                     <button
+                    onClick={handleDownload}
+                    className="px-4 py-2.5 rounded-xl border flex items-center gap-2"
                   >
                     <Download className="w-4 h-4" />
                     Save
-                  </a>
+                  </button>
                 </div>
               </div>
             </motion.div>

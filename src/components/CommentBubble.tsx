@@ -1,15 +1,34 @@
 import { motion } from 'motion/react';
 import type { Comment } from '../types';
+import { Trash2 } from 'lucide-react';
+import { useAuthStore } from '../store/authStore';
 
 
 interface CommentBubbleProps {
   comment: Comment;
+    postId: string;
   index?: number;
+    onDeleted?: (commentId: string) => void;
+
 }
 
-const CommentBubble = ({ comment, index = 0 }: CommentBubbleProps) => {
+const CommentBubble = ({ comment, postId, index = 0, onDeleted }: CommentBubbleProps) => {
+  const { user } = useAuthStore();
   const username = (comment.userId as any)?.username || 'Anonymous';
   const avatarLetter = username[0]?.toUpperCase() || 'U';
+  const myId = (user as any)?._id || user?.id;
+  const isOwner = !!myId && ((comment.userId as any)?._id?.toString() === myId || (comment.userId as any)?.toString() === myId);
+
+  const handleDelete = async () => {
+    if (!confirm('Delete this comment?')) return;
+    try {
+      const { commentsService } = await import('../services/comments.service');
+      await commentsService.deleteComment(postId, comment._id);
+      onDeleted?.(comment._id);
+    } catch {
+      alert('Failed to delete comment.');
+    }
+  };
 
   return (
     <motion.div
@@ -27,11 +46,18 @@ const CommentBubble = ({ comment, index = 0 }: CommentBubbleProps) => {
           <span className="text-xs text-muted-foreground">
             {new Date(comment.createdAt).toLocaleDateString()}
           </span>
+          {isOwner && (
+            <button
+              onClick={handleDelete}
+              className="ml-auto text-muted-foreground hover:text-red-500 transition-colors"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+            </button>
+          )}
         </div>
         <p className="text-sm text-secondary-foreground leading-relaxed">{comment.text}</p>
       </div>
     </motion.div>
   );
 };
-
 export default CommentBubble;
