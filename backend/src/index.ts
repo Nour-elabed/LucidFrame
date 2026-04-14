@@ -30,20 +30,7 @@ app.use(cors({
 }));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
-// Serve uploaded images statically - fix for production deployment
-const uploadsPath = process.env.NODE_ENV === 'production' 
-  ? '/usr/src/app/uploads'  // Render's mount path
-  : path.join(process.cwd(), 'uploads');
 
-// Ensure uploads directory exists in production
-if (process.env.NODE_ENV === 'production') {
-  const fs = require('fs');
-  if (!fs.existsSync(uploadsPath)) {
-    fs.mkdirSync(uploadsPath, { recursive: true });
-  }
-}
-
-app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 // ── Socket.IO ─────────────────────────────────────────────────────────────────
 initSocket(httpServer);
 

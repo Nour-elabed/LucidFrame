@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import * as PostService from './post.service';
 import { sendSuccess } from '../../utils/response.utils';
+import { uploadToCloudinary } from '../../utils/upload.utils';
 
 export const getFeed = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
@@ -18,33 +19,30 @@ export const getPost = async (req: Request, res: Response, next: NextFunction): 
   } catch (err) { next(err); }
 };
 
-export const createPost = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
+export const createPost = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const userId = req.user!.userId;
     let imageUrl: string;
 
     if (req.file) {
-      imageUrl = `/uploads/${req.file.filename}`;
+      imageUrl = await uploadToCloudinary(req.file.buffer, req.file.originalname);
+      console.log('[Post Controller] Cloudinary URL:', imageUrl);
     } else if (req.body.imageUrl) {
       imageUrl = req.body.imageUrl;
     } else {
-      res.status(400).json({ message: 'Image is required' });
+      res.status(400).json({ success: false, message: 'Image is required' });
       return;
     }
 
     const caption = req.body.caption || '';
     const post = await PostService.createPost(userId, imageUrl, caption);
-
-    res.status(201).json({ success: true, data: post });
+    sendSuccess(res, post, 'Post created', 201);
   } catch (err: any) {
     console.error('[Post Controller] Error:', err.message, err.stack);
     next(err);
   }
 };
+
 export const likePost = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const post = await PostService.toggleLike(req.params.id, req.user!.userId);
