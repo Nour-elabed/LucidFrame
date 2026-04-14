@@ -22,16 +22,7 @@ const httpServer = createServer(app);
 // ── Middleware ────────────────────────────────────────────────────────────────
 app.use(cors({
   origin: (origin, callback) => {
-    const allowed = [
-      'http://localhost:5173',
-      'http://localhost:3000',
-    ];
-    // Allow any vercel.app subdomain + the env var
-    if (!origin || allowed.includes(origin) || origin.endsWith('.vercel.app')) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
+    callback(null, true); // allow all origins
   },
   credentials: true,
 }));

@@ -10,12 +10,14 @@ let io: SocketServer;
  */
 export const initSocket = (httpServer: HTTPServer): SocketServer => {
   io = new SocketServer(httpServer, {
-    cors: {
-      origin: true,
-      methods: ['GET', 'POST'],
-      credentials: true,
+  cors: {
+    origin: (origin, callback) => {
+      callback(null, true); // allow all origins
     },
-  });
+    methods: ['GET', 'POST'],
+    credentials: true,
+  },
+});
   
 
   const onlineUsers = new Set<string>();
