@@ -31,6 +31,9 @@ app.use(express.urlencoded({ extended: true }));
 
 // ── Socket.IO ─────────────────────────────────────────────────────────────────
 initSocket(httpServer);
+app.get('/api/health', (_req, res) => {
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
 
 // ── Routes ────────────────────────────────────────────────────────────────────
 app.get('/api/health', (_req, res) => {
@@ -51,6 +54,12 @@ app.use((_req, res) => {
 
 // ── Global Error Handler ───────────────────────────────────────────────────────
 app.use(errorMiddleware);
+// Keep-alive to prevent Render free tier sleep
+const BACKEND_URL = 'https://lucidframe-1.onrender.com';
+setInterval(() => {
+  fetch(`${BACKEND_URL}/api/health`).catch(() => {});
+}, 14 * 60 * 1000);
+
 
 // ── Start Server ──────────────────────────────────────────────────────────────
 const start = async () => {

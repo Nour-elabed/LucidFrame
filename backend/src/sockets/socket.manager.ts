@@ -17,6 +17,8 @@ export const initSocket = (httpServer: HTTPServer): SocketServer => {
     methods: ['GET', 'POST'],
     credentials: true,
   },
+    transports: ['polling', 'websocket'],
+
 });
   
 
