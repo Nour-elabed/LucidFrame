@@ -43,8 +43,7 @@ if (process.env.NODE_ENV === 'production') {
   }
 }
 
-app.use('/uploads', express.static(uploadsPath));
-
+app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 // ── Socket.IO ─────────────────────────────────────────────────────────────────
 initSocket(httpServer);
 

@@ -85,29 +85,17 @@ export const generateImage = async (
   // Fetch with retry logic
   const imageBytes = await fetchWithRetry(enhancedPrompt);
 
-  // Save image to disk - ensure directory exists
-  const uploadDir = process.env.NODE_ENV === 'production' 
-    ? '/usr/src/app/uploads'  // Render's mount path
-    : path.join(process.cwd(), 'uploads');
-  
+  // Save image to disk
+  const uploadDir = path.join(process.cwd(), 'uploads');
   if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
-    console.log('[AI Service] Created uploads directory:', uploadDir);
   }
 
   const filename = `ai-${uuidv4()}.jpg`;
   const filepath = path.join(uploadDir, filename);
-  
-  try {
-    fs.writeFileSync(filepath, imageBytes);
-    console.log('[AI Service] Image saved successfully:', filename);
-  } catch (error) {
-    console.error('[AI Service] Failed to save image:', error);
-    throw new Error('Failed to save generated image');
-  }
+  fs.writeFileSync(filepath, imageBytes);
 
   const imageUrl = `/uploads/${filename}`;
-  console.log('[AI Service] Image URL:', imageUrl);
 
   // Persist to DB
   const generated = await GeneratedImageModel.create({

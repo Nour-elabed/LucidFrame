@@ -18,29 +18,30 @@ export const getPost = async (req: Request, res: Response, next: NextFunction): 
   } catch (err) { next(err); }
 };
 
-export const createPost = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const createPost = async (
+  
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   try {
-    const { caption, imageUrl } = req.body;
-    let finalImageUrl = imageUrl;
+const userId = req.user!.userId;
 
-    if (req.file) {
-      // ✅ Build a full absolute URL so Vercel frontend can always reach it
-      const protocol = req.headers['x-forwarded-proto'] || req.protocol;
-      const host = req.headers['x-forwarded-host'] || req.get('host');
-      finalImageUrl = `${protocol}://${host}/uploads/${req.file.filename}`;
-      
-      console.log('[Post Controller] File uploaded, absolute URL:', finalImageUrl);
-    }
-
-    if (!finalImageUrl) {
-      res.status(400).json({ success: false, message: 'Image URL or file is required' });
+    if (!req.file) {
+      res.status(400).json({ message: 'Image is required' });
       return;
     }
 
-    const post = await PostService.createPost(req.user!.userId, finalImageUrl, caption || '');
-    sendSuccess(res, post, 'Post created', 201);
-  } catch (err: any) {
-    console.error('[Post Controller] Error:', err.message);
+    const imageUrl = `/uploads/${req.file.filename}`;
+    const caption = req.body.caption || '';
+
+    const post = await PostService.createPost(userId, imageUrl, caption);
+
+    res.status(201).json({
+      success: true,
+      data: post,
+    });
+  } catch (err) {
     next(err);
   }
 };
