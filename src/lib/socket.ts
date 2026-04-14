@@ -2,7 +2,8 @@ import { io, Socket } from 'socket.io-client';
 import { getApiOrigin } from './apiOrigin';
 
 const SOCKET_URL =
-  import.meta.env.VITE_SOCKET_URL?.trim() || getApiOrigin();
+  import.meta.env.VITE_SOCKET_URL ||
+  "https://lucidframe-1.onrender.com";
 
 let socket: Socket | null = null;
 socket = io(SOCKET_URL, {
