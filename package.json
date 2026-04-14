@@ -11,8 +11,7 @@
     "build:full": "npm run build:backend && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "start": "serve -s dist -l 10000"
-
+     "start": "node server.cjs"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.2.2",
