@@ -7,7 +7,6 @@ const BASE_URL = getAxiosBaseUrl();
 const axiosInstance = axios.create({
   baseURL: BASE_URL,
   timeout: 30000,
-  headers: { 'Content-Type': 'application/json' },
 });
 
 // Attach JWT token from localStorage on every request
@@ -16,6 +15,11 @@ axiosInstance.interceptors.request.use((config) => {
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+  if (!(config.data instanceof FormData)) {
+    config.headers['Content-Type'] = 'application/json';
+  }
+  // For FormData, browser sets Content-Type with correct boundary automatically
+
   return config;
 });
 

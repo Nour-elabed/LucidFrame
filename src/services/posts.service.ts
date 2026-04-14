@@ -22,7 +22,6 @@ export const postsService = {
     formData.append('image', file);
     formData.append('caption', caption);
     const res = await api.post<ApiResponse<Post>>('/posts', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
     });
     return res.data.data;
   },
