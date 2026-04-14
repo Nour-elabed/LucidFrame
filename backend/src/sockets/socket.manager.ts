@@ -9,18 +9,17 @@ let io: SocketServer;
  * Called once at server startup.
  */
 export const initSocket = (httpServer: HTTPServer): SocketServer => {
-  io = new SocketServer(httpServer, {
+ io = new SocketServer(httpServer, {
   cors: {
-    origin: (origin, callback) => {
-      callback(null, true); // allow all origins
-    },
-    methods: ['GET', 'POST'],
-    credentials: true,
+    origin: [
+      "https://lucid-frame.vercel.app",
+      "http://localhost:5173"
+    ],
+    methods: ["GET", "POST"],
+    credentials: true
   },
-    transports: ['polling', 'websocket'],
-
+  transports: ["websocket", "polling"]
 });
-  
 
   const onlineUsers = new Set<string>();
 

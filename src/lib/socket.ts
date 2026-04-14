@@ -5,6 +5,11 @@ const SOCKET_URL =
   import.meta.env.VITE_SOCKET_URL?.trim() || getApiOrigin();
 
 let socket: Socket | null = null;
+socket = io(SOCKET_URL, {
+  autoConnect: false,
+  reconnection: true,
+  transports: ["websocket", "polling"], // 🔥 ADD THIS
+});
 
 export const getSocket = (): Socket => {
   if (!socket) {
