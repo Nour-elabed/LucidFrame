@@ -2,6 +2,7 @@ import { GeneratedImageModel, GenerationType } from './generated.model';
 import fs from 'fs';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
+import { uploadToCloudinary } from '../../utils/uploadToCloudinary';
 
 const enhancePrompt = (prompt: string, type: GenerationType): string => {
   const prefixes: Record<GenerationType, string> = {
@@ -106,9 +107,7 @@ High-end commercial photography, 85mm lens, soft studio lighting, ultra realisti
 
   const filename = `ai-${uuidv4()}.jpg`;
   const filepath = path.join(uploadDir, filename);
-  fs.writeFileSync(filepath, imageBytes);
-
-  const imageUrl = `/uploads/${filename}`;
+  const imageUrl = await uploadToCloudinary(imageBytes);
 
   // Persist to DB
   const generated = await GeneratedImageModel.create({
