@@ -11,6 +11,7 @@
     "verify-media": "node scripts/verify-media.cjs",
     "normalize-media-urls": "node scripts/normalize-media-urls.cjs",
     "migrate:cloudinary": "ts-node -r tsconfig-paths/register src/scripts/migrateUploadsToCloudinary.ts"
+    
   },
   "dependencies": {
     "@google/generative-ai": "^0.21.0",
