@@ -22,7 +22,8 @@ const httpServer = createServer(app);
 // ── Middleware ────────────────────────────────────────────────────────────────
 app.use(cors({
   origin: [
-    "https://lucid-frame.vercel.app",
+          "http://localhost:5173",
+
   ],
   credentials: true
 }));
@@ -54,8 +55,6 @@ app.use((_req, res) => {
 
 // ── Global Error Handler ───────────────────────────────────────────────────────
 app.use(errorMiddleware);
-// Keep-alive to prevent Render free tier sleep
-const BACKEND_URL = 'https://lucidframe-1.onrender.com';
 
 
 

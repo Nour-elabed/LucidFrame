@@ -3,7 +3,7 @@ import { getApiOrigin } from './apiOrigin';
 
 const SOCKET_URL =
   import.meta.env.VITE_SOCKET_URL ||
-  "https://lucidframe-1.onrender.com";
+  "http://localhost:5000";
 
 let socket: Socket | null = null;
 socket = io(SOCKET_URL, {

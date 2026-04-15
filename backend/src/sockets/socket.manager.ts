@@ -12,7 +12,7 @@ export const initSocket = (httpServer: HTTPServer): SocketServer => {
  io = new SocketServer(httpServer, {
   cors: {
     origin: [
-      "https://lucid-frame.vercel.app",
+      
       "http://localhost:5173"
     ],
     methods: ["GET", "POST"],
