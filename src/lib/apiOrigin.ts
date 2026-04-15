@@ -7,16 +7,14 @@
  */
 export function getApiOrigin(): string {
   const raw = import.meta.env.VITE_API_URL?.trim();
-  if (!raw) {
-    if (import.meta.env.PROD) {
-      console.warn(
-        '[LucidFrame] VITE_API_URL is missing. Images and API calls will not work. ' +
-          'In Vercel: Project → Settings → Environment Variables → add VITE_API_URL ' +
-          '(e.g. https://your-backend.railway.app/api), then Redeploy.'
-      );
-    }
-    return 'http://localhost:5000';
+ if (!raw) {
+  if (import.meta.env.PROD) {
+    throw new Error(
+      'VITE_API_URL is missing in production. Set it in Vercel environment variables.'
+    );
   }
+  return 'http://localhost:5000';
+}
 
   const withProto = raw.startsWith('http') ? raw : `https://${raw}`;
   const noTrail = withProto.replace(/\/+$/, '');
