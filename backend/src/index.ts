@@ -23,7 +23,6 @@ const httpServer = createServer(app);
 app.use(cors({
   origin: [
     "https://lucid-frame.vercel.app",
-    "http://localhost:5173"
   ],
   credentials: true
 }));
