@@ -20,6 +20,7 @@ export const getAdminStats = async () => {
   const [totalUsers, totalPosts] = await Promise.all([
     UserModel.countDocuments(),
     PostModel.countDocuments(),
+    
   ]);
 
   const topPrompts = await GeneratedImageModel.aggregate([
