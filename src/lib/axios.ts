@@ -14,6 +14,7 @@ axiosInstance.interceptors.request.use((config) => {
   const token = localStorage.getItem('lucidframe_token');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
+    
   }
   if (!(config.data instanceof FormData)) {
     config.headers['Content-Type'] = 'application/json';
